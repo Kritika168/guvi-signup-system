@@ -3,7 +3,7 @@ const { MongoClient } = require('mongodb');
 
 // MongoDB configuration
 const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017';
-const dbName = 'user_profiles_db';
+const dbName = 'guvi_profiles'; // Updated to match connection string
 const collectionName = 'profiles';
 
 let client = null;
@@ -15,6 +15,7 @@ async function getMongoDBConnection() {
             client = new MongoClient(mongoUri);
             await client.connect();
             db = client.db(dbName);
+            console.log('✅ MongoDB Connected to:', dbName);
         }
         return db;
     } catch (error) {
@@ -27,8 +28,10 @@ async function getMongoCollection() {
     try {
         const database = await getMongoDBConnection();
         if (database) {
+            console.log('✅ MongoDB Collection accessed:', collectionName);
             return database.collection(collectionName);
         }
+        console.log('⚠️  MongoDB database not available');
         return null;
     } catch (error) {
         console.error('MongoDB Collection error:', error.message);
