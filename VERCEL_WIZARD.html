@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vercel Deployment Wizard - GUVI Project</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000 0%, #111 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff 0%, #999 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .logo {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+        
+        .step-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .step-card h2 {
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        
+        .step-card p {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .step-card ul {
+            color: #ccc;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .step-card li {
+            margin: 8px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #fff;
+            color: #000;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 10px 10px 0 0;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-github {
+            background: #333;
+            color: #fff;
+        }
+        
+        .code-box {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .code-box pre {
+            margin: 0;
+            color: #0f0;
+        }
+        
+        .progress {
+            text-align: center;
+            font-size: 2em;
+            color: #4a9eff;
+            margin: 30px 0;
+        }
+        
+        .highlight {
+            color: #4a9eff;
+            font-weight: bold;
+        }
+        
+        .warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .success {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-family: monospace;
+        }
+        
+        .copy-btn {
+            background: #4a9eff;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            float: right;
+        }
+        
+        .copy-btn:hover {
+            background: #357abd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <svg class="logo" viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M63.5 38L38 63.5L12.5 38L38 12.5L63.5 38Z" fill="white"/>
+            </svg>
+            <h1>Deploy to Vercel</h1>
+            <p style="color: #999;">Follow these 4 simple steps</p>
+        </div>
+        
+        <div class="progress">Step <span id="currentStep">1</span> of 4</div>
+        
+        <!-- Step 1 -->
+        <div class="step-card" id="step1">
+            <h2>📦 Step 1: Install Node.js Dependencies</h2>
+            <p>First, install the required packages locally:</p>
+            <div class="code-box">
+                <button class="copy-btn" onclick="copyToClipboard('cd C:\\Users\\kriti\\OneDrive\\Desktop\\guviPS\nnpm install')">Copy</button>
+                <pre>cd C:\Users\kriti\OneDrive\Desktop\guviPS
+npm install</pre>
+            </div>
+            <p>This will install Express, MongoDB, Redis, and other dependencies.</p>
+            <button onclick="completeStep(1)" class="btn">Mark Complete →</button>
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="step-card" id="step2" style="display:none;">
+            <h2>🗄️ Step 2: Setup Free Databases</h2>
+            
+            <h3 style="margin-top: 20px;">A) PlanetScale (MySQL) - Free Forever</h3>
+            <ul>
+                <li>Go to <a href="https://planetscale.com" target="_blank" style="color: #4a9eff;">planetscale.com</a></li>
+                <li>Sign up with GitHub</li>
+                <li>Create new database: "user-registration-db"</li>
+                <li>Get connection details</li>
+            </ul>
+            <a href="https://planetscale.com" target="_blank" class="btn">Go to PlanetScale</a>
+            
+            <h3 style="margin-top: 30px;">B) MongoDB Atlas (Free M0)</h3>
+            <ul>
+                <li>Go to <a href="https://mongodb.com/cloud/atlas" target="_blank" style="color: #4a9eff;">MongoDB Atlas</a></li>
+                <li>Create FREE M0 cluster (look for "Shared" tier)</li>
+                <li>Allow access from anywhere (0.0.0.0/0)</li>
+                <li>Get connection string</li>
+            </ul>
+            <a href="https://mongodb.com/cloud/atlas/register" target="_blank" class="btn">Go to MongoDB</a>
+            
+            <h3 style="margin-top: 30px;">C) Redis Cloud (Free 30MB)</h3>
+            <ul>
+                <li>Go to <a href="https://redis.com/try-free" target="_blank" style="color: #4a9eff;">Redis Cloud</a></li>
+                <li>Create free database</li>
+                <li>Get host, port, and password</li>
+            </ul>
+            <a href="https://redis.com/try-free" target="_blank" class="btn">Go to Redis</a>
+            
+            <div class="warning">
+                <strong>⚠️ Save Your Credentials!</strong> You'll need these in Step 4.
+            </div>
+            
+            <button onclick="completeStep(2)" class="btn">Mark Complete →</button>
+        </div>
+        
+        <!-- Step 3 -->
+        <div class="step-card" id="step3" style="display:none;">
+            <h2>📤 Step 3: Deploy to Vercel</h2>
+            
+            <p><strong>Option A: Deploy with GitHub (Recommended)</strong></p>
+            <ol style="color: #ccc; margin-left: 20px; line-height: 2;">
+                <li>Create GitHub repository</li>
+                <li>Push your code to GitHub</li>
+                <li>Go to <a href="https://vercel.com" target="_blank" style="color: #4a9eff;">vercel.com</a></li>
+                <li>Sign in with GitHub</li>
+                <li>Click "Add New Project"</li>
+                <li>Import your repository</li>
+                <li>Click "Deploy"</li>
+            </ol>
+            
+            <div class="code-box">
+                <button class="copy-btn" onclick="copyToClipboard('git init\ngit add .\ngit commit -m \"Initial commit\"\ngit remote add origin YOUR_GITHUB_REPO_URL\ngit push -u origin main')">Copy</button>
+                <pre>git init
+git add .
+git commit -m "Initial commit"
+git remote add origin YOUR_GITHUB_REPO_URL
+git push -u origin main</pre>
+            </div>
+            
+            <a href="https://vercel.com" target="_blank" class="btn">Go to Vercel</a>
+            <a href="https://github.com/new" target="_blank" class="btn btn-github">Create GitHub Repo</a>
+            
+            <p style="margin-top: 30px;"><strong>Option B: Deploy with Vercel CLI</strong></p>
+            <div class="code-box">
+                <button class="copy-btn" onclick="copyToClipboard('npm install -g vercel\nvercel')">Copy</button>
+                <pre>npm install -g vercel
+vercel</pre>
+            </div>
+            
+            <button onclick="completeStep(3)" class="btn">Mark Complete →</button>
+        </div>
+        
+        <!-- Step 4 -->
+        <div class="step-card" id="step4" style="display:none;">
+            <h2>⚙️ Step 4: Add Environment Variables</h2>
+            
+            <p>In your Vercel project dashboard:</p>
+            <ol style="color: #ccc; margin-left: 20px; line-height: 2;">
+                <li>Go to Project Settings</li>
+                <li>Click "Environment Variables"</li>
+                <li>Add these variables:</li>
+            </ol>
+            
+            <div style="margin: 20px 0;">
+                <input type="text" id="dbHost" placeholder="DB_HOST (from PlanetScale)">
+                <input type="text" id="dbUser" placeholder="DB_USER (from PlanetScale)">
+                <input type="text" id="dbPass" placeholder="DB_PASS (from PlanetScale)">
+                <input type="text" id="dbName" placeholder="DB_NAME = user_registration_db">
+                <input type="text" id="mongoUri" placeholder="MONGO_URI (from MongoDB Atlas)">
+                <input type="text" id="redisHost" placeholder="REDIS_HOST (from Redis Cloud)">
+                <input type="text" id="redisPort" placeholder="REDIS_PORT (from Redis Cloud)">
+                <input type="text" id="redisPass" placeholder="REDIS_PASSWORD (from Redis Cloud)">
+            </div>
+            
+            <button onclick="generateEnvVars()" class="btn">Generate Config</button>
+            
+            <div id="envOutput" style="display:none; margin-top: 20px;">
+                <div class="code-box">
+                    <button class="copy-btn" onclick="copyEnvVars()">Copy All</button>
+                    <pre id="envVariables"></pre>
+                </div>
+            </div>
+            
+            <div class="warning" style="margin-top: 20px;">
+                <strong>⚠️ After adding variables:</strong> Redeploy your project in Vercel!
+            </div>
+            
+            <button onclick="completeStep(4)" class="btn">Mark Complete →</button>
+        </div>
+        
+        <!-- Success -->
+        <div class="step-card" id="success" style="display:none;">
+            <div class="success">
+                <h2>🎉 Deployment Complete!</h2>
+                <p>Your project is now live on Vercel!</p>
+                <p style="margin-top: 15px;">Your site URL: <span class="highlight">https://your-project.vercel.app</span></p>
+                <p>Test pages:</p>
+                <ul>
+                    <li>/signup.html</li>
+                    <li>/login.html</li>
+                    <li>/profile.html</li>
+                </ul>
+                <p style="margin-top: 20px;"><strong>You can now submit this project for your GUVI internship!</strong></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentStep = 1;
+        
+        function completeStep(step) {
+            currentStep++;
+            document.getElementById('currentStep').textContent = currentStep;
+            
+            // Hide current step
+            document.getElementById('step' + step).style.display = 'none';
+            
+            // Show next step or success
+            if (currentStep <= 4) {
+                document.getElementById('step' + currentStep).style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                document.getElementById('success').style.display = 'block';
+                document.querySelector('.progress').textContent = '✅ Complete!';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert('Copied to clipboard!');
+        }
+        
+        function generateEnvVars() {
+            const dbHost = document.getElementById('dbHost').value || 'your_db_host';
+            const dbUser = document.getElementById('dbUser').value || 'your_db_user';
+            const dbPass = document.getElementById('dbPass').value || 'your_db_password';
+            const dbName = document.getElementById('dbName').value || 'user_registration_db';
+            const mongoUri = document.getElementById('mongoUri').value || 'your_mongo_uri';
+            const redisHost = document.getElementById('redisHost').value || 'your_redis_host';
+            const redisPort = document.getElementById('redisPort').value || '6379';
+            const redisPass = document.getElementById('redisPass').value || 'your_redis_password';
+            
+            const envVars = `DB_HOST=${dbHost}
+DB_USER=${dbUser}
+DB_PASS=${dbPass}
+DB_NAME=${dbName}
+MONGO_URI=${mongoUri}
+REDIS_HOST=${redisHost}
+REDIS_PORT=${redisPort}
+REDIS_PASSWORD=${redisPass}`;
+            
+            document.getElementById('envVariables').textContent = envVars;
+            document.getElementById('envOutput').style.display = 'block';
+        }
+        
+        function copyEnvVars() {
+            const text = document.getElementById('envVariables').textContent;
+            navigator.clipboard.writeText(text);
+            alert('Environment variables copied! Paste them in Vercel.');
+        }
+    </script>
+</body>
+</html>

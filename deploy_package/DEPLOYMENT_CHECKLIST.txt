@@ -1,0 +1,49 @@
+﻿================================================================================
+GUVI PROJECT - DEPLOYMENT CHECKLIST
+================================================================================
+
+Your deployment package is ready at:
+C:\Users\kriti\OneDrive\Desktop\guviPS\deploy_package
+
+NEXT STEPS:
+-----------
+
+1. Choose FREE hosting:
+   - InfinityFree: https://infinityfree.net
+   - 000webhost: https://www.000webhost.com
+   - Replit: https://replit.com
+
+2. Upload all files from deploy_package folder
+
+3. Setup MySQL Database:
+   - Create database in hosting panel
+   - Import sql/schema.sql
+   - Update php/config/mysql_config.php with credentials
+
+4. Setup MongoDB Atlas (FREE):
+   - Sign up: https://www.mongodb.com/cloud/atlas/register
+   - Create M0 Free cluster
+   - Get connection string
+   - Update php/config/mongodb_config.php
+
+5. Setup Redis Cloud (FREE):
+   - Sign up: https://redis.com/try-free/
+   - Create free database
+   - Get host, port, password
+   - Update php/config/redis_config.php
+
+6. Test your site:
+   - Visit your live URL/signup.html
+   - Test registration and login
+
+================================================================================
+DOCUMENTATION FILES:
+================================================================================
+
+- QUICKSTART.md  : Quick deployment guide
+- DEPLOYMENT.md  : Detailed instructions
+- README.md      : Full documentation
+
+================================================================================
+Estimated Time: 30-45 minutes | Cost: FREE
+================================================================================

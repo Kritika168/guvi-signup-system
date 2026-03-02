@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUVI Project - Deployment Wizard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .step:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+        
+        .step.completed {
+            border-left-color: #28a745;
+            background: #e8f5e9;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+        
+        .step.completed .step-number {
+            background: #28a745;
+        }
+        
+        .step-content {
+            display: inline-block;
+            vertical-align: top;
+            width: calc(100% - 60px);
+        }
+        
+        .step h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .step p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .step ul {
+            margin-left: 20px;
+            color: #666;
+        }
+        
+        .step li {
+            margin: 5px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 0 0;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .credential-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .credential-box input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #e83e8c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 GUVI Project Deployment Wizard</h1>
+            <p>Follow these steps to deploy your project online (100% FREE)</p>
+        </div>
+        
+        <div class="content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress">0% Complete</div>
+            </div>
+            
+            <div class="alert alert-info">
+                <strong>📌 Note:</strong> This wizard will guide you through deploying your project. 
+                Mark each step as complete by clicking the checkbox or "Mark Complete" button.
+            </div>
+            
+            <!-- Step 1 -->
+            <div class="step" id="step1">
+                <span class="step-number">1</span>
+                <div class="step-content">
+                    <h3>Sign Up for InfinityFree Hosting</h3>
+                    <p>InfinityFree provides free PHP hosting with MySQL database.</p>
+                    <ul>
+                        <li>Free PHP & MySQL hosting</li>
+                        <li>No ads on your site</li>
+                        <li>Free subdomain (yourname.infinityfreeapp.com)</li>
+                    </ul>
+                    <a href="https://infinityfree.net" target="_blank" class="btn">Sign Up Now</a>
+                    <button onclick="markComplete(1)" class="btn btn-success">Mark Complete</button>
+                </div>
+            </div>
+            
+            <!-- Step 2 -->
+            <div class="step" id="step2">
+                <span class="step-number">2</span>
+                <div class="step-content">
+                    <h3>Sign Up for MongoDB Atlas</h3>
+                    <p>MongoDB Atlas provides free cloud MongoDB database (512MB).</p>
+                    <ul>
+                        <li>Create account and sign in</li>
+                        <li>Create a FREE M0 cluster (select AWS/GCP/Azure - any region)</li>
+                        <li>Setup Database User (username & password)</li>
+                        <li>Setup Network Access: Allow 0.0.0.0/0 (Allow from anywhere)</li>
+                        <li>Get connection string: Click "Connect" → "Connect your application"</li>
+                    </ul>
+                    <div class="credential-box">
+                        <strong>Save your MongoDB connection string:</strong>
+                        <input type="text" id="mongoUri" placeholder="mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/...">
+                    </div>
+                    <a href="https://www.mongodb.com/cloud/atlas/register" target="_blank" class="btn">Sign Up for MongoDB</a>
+                    <button onclick="markComplete(2)" class="btn btn-success">Mark Complete</button>
+                </div>
+            </div>
+            
+            <!-- Step 3 -->
+            <div class="step" id="step3">
+                <span class="step-number">3</span>
+                <div class="step-content">
+                    <h3>Sign Up for Redis Cloud</h3>
+                    <p>Redis Cloud provides free Redis database (30MB).</p>
+                    <ul>
+                        <li>Create account and sign in</li>
+                        <li>Click "New Database" and select FREE plan</li>
+                        <li>Choose region closest to your hosting</li>
+                        <li>Note down: Endpoint, Port, and Password</li>
+                    </ul>
+                    <div class="credential-box">
+                        <strong>Save your Redis credentials:</strong>
+                        <input type="text" id="redisHost" placeholder="redis-12345.c1.us-east-1-2.ec2.cloud.redislabs.com">
+                        <input type="text" id="redisPort" placeholder="12345">
+                        <input type="text" id="redisPassword" placeholder="your_redis_password">
+                    </div>
+                    <a href="https://redis.com/try-free/" target="_blank" class="btn">Sign Up for Redis</a>
+                    <button onclick="markComplete(3)" class="btn btn-success">Mark Complete</button>
+                </div>
+            </div>
+            
+            <!-- Step 4 -->
+            <div class="step" id="step4">
+                <span class="step-number">4</span>
+                <div class="step-content">
+                    <h3>Upload Files to InfinityFree</h3>
+                    <p>Upload all project files to your hosting account.</p>
+                    <ul>
+                        <li>Login to InfinityFree Control Panel (VistaPanel)</li>
+                        <li>Go to "Online File Manager"</li>
+                        <li>Navigate to <code>htdocs</code> folder</li>
+                        <li>Upload ALL files from your <code>deploy_package</code> folder</li>
+                        <li>Or use FTP (FileZilla) for faster upload</li>
+                    </ul>
+                    <button onclick="markComplete(4)" class="btn btn-success">Mark Complete</button>
+                </div>
+            </div>
+            
+            <!-- Step 5 -->
+            <div class="step" id="step5">
+                <span class="step-number">5</span>
+                <div class="step-content">
+                    <h3>Setup MySQL Database</h3>
+                    <p>Create MySQL database and import schema.</p>
+                    <ul>
+                        <li>In control panel, go to "MySQL Databases"</li>
+                        <li>Click "Create Database" and create new database</li>
+                        <li>Note down: Database name, Username, Password, Hostname</li>
+                        <li>Go to phpMyAdmin</li>
+                        <li>Select your database and click "Import"</li>
+                        <li>Upload <code>sql/schema.sql</code> file</li>
+                    </ul>
+                    <div class="credential-box">
+                        <strong>Save your MySQL credentials:</strong>
+                        <input type="text" id="dbHost" placeholder="sql123.infinityfree.com">
+                        <input type="text" id="dbUser" placeholder="if0_12345678">
+                        <input type="text" id="dbPass" placeholder="your_password">
+                        <input type="text" id="dbName" placeholder="if0_12345678_user_registration_db">
+                    </div>
+                    <button onclick="markComplete(5)" class="btn btn-success">Mark Complete</button>
+                </div>
+            </div>
+            
+            <!-- Step 6 -->
+            <div class="step" id="step6">
+                <span class="step-number">6</span>
+                <div class="step-content">
+                    <h3>Update Configuration Files</h3>
+                    <p>Update database credentials in your configuration files.</p>
+                    <ul>
+                        <li>Edit <code>php/config/mysql_config.php</code> with MySQL credentials from Step 5</li>
+                        <li>Edit <code>php/config/mongodb_config.php</code> with MongoDB URI from Step 2</li>
+                        <li>Edit <code>php/config/redis_config.php</code> with Redis credentials from Step 3</li>
+                        <li>Re-upload the updated config files to your hosting</li>
+                    </ul>
+                    <button onclick="generateConfig()" class="btn btn-secondary">Generate Config Code</button>
+                    <button onclick="markComplete(6)" class="btn btn-success">Mark Complete</button>
+                    <div id="configOutput" style="display:none; margin-top:15px;">
+                        <div class="credential-box">
+                            <strong>Copy this code to your config files:</strong>
+                            <textarea id="configCode" style="width:100%; height:200px; font-family:monospace; padding:10px; margin-top:10px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 7 -->
+            <div class="step" id="step7">
+                <span class="step-number">7</span>
+                <div class="step-content">
+                    <h3>Test Your Application</h3>
+                    <p>Visit your live site and test all functionality.</p>
+                    <ul>
+                        <li>Visit: <code>https://yourname.infinityfreeapp.com/signup.html</code></li>
+                        <li>Test user registration</li>
+                        <li>Test login with your credentials</li>
+                        <li>Test profile update functionality</li>
+                        <li>Test logout</li>
+                    </ul>
+                    <button onclick="markComplete(7)" class="btn btn-success">Mark Complete</button>
+                </div>
+            </div>
+            
+            <div class="alert alert-success" id="completionMessage" style="display:none;">
+                <strong>🎉 Congratulations!</strong> Your project is deployed and ready! 
+                You can now submit it for your GUVI internship application.
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let completedSteps = JSON.parse(localStorage.getItem('deploymentProgress')) || [];
+        
+        function updateProgress() {
+            const progress = (completedSteps.length / 7) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            document.getElementById('progress').textContent = Math.round(progress) + '% Complete';
+            
+            completedSteps.forEach(step => {
+                document.getElementById('step' + step).classList.add('completed');
+            });
+            
+            if (completedSteps.length === 7) {
+                document.getElementById('completionMessage').style.display = 'block';
+            }
+            
+            localStorage.setItem('deploymentProgress', JSON.stringify(completedSteps));
+        }
+        
+        function markComplete(stepNumber) {
+            if (!completedSteps.includes(stepNumber)) {
+                completedSteps.push(stepNumber);
+                updateProgress();
+            }
+        }
+        
+        function generateConfig() {
+            const mongoUri = document.getElementById('mongoUri').value || 'mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/';
+            const redisHost = document.getElementById('redisHost').value || 'redis-12345.c1.us-east-1-2.ec2.cloud.redislabs.com';
+            const redisPort = document.getElementById('redisPort').value || '12345';
+            const redisPassword = document.getElementById('redisPassword').value || 'your_password';
+            const dbHost = document.getElementById('dbHost').value || 'sql123.infinityfree.com';
+            const dbUser = document.getElementById('dbUser').value || 'if0_12345678';
+            const dbPass = document.getElementById('dbPass').value || 'your_password';
+            const dbName = document.getElementById('dbName').value || 'if0_12345678_user_registration_db';
+            
+            const config = `
+// ==========================================
+// MySQL Configuration (mysql_config.php)
+// ==========================================
+define('DB_HOST', '${dbHost}');
+define('DB_USER', '${dbUser}');
+define('DB_PASS', '${dbPass}');
+define('DB_NAME', '${dbName}');
+
+// ==========================================
+// MongoDB Configuration (mongodb_config.php)
+// ==========================================
+define('MONGO_URI', '${mongoUri}');
+
+// ==========================================
+// Redis Configuration (redis_config.php)
+// ==========================================
+const REDIS_HOST = '${redisHost}';
+const REDIS_PORT = ${redisPort};
+const REDIS_PASSWORD = '${redisPassword}';
+`;
+            
+            document.getElementById('configCode').value = config;
+            document.getElementById('configOutput').style.display = 'block';
+        }
+        
+        // Load progress on page load
+        updateProgress();
+    </script>
+</body>
+</html>

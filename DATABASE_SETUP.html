@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Setup Wizard - GUVI Project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .wizard-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        .step-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px 15px 0 0;
+        }
+        .credential-box {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .copy-btn {
+            font-size: 12px;
+            padding: 5px 15px;
+        }
+        .status-badge {
+            font-size: 14px;
+            padding: 5px 12px;
+        }
+        .instruction-list {
+            padding-left: 20px;
+        }
+        .instruction-list li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .env-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            margin-top: 15px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+        }
+        .alert-custom {
+            border-left: 4px solid #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="wizard-container">
+        <div class="text-center mb-4">
+            <h1 class="text-white">🗄️ Database Setup Wizard</h1>
+            <p class="text-white">Set up your free cloud databases in 3 steps</p>
+        </div>
+
+        <!-- Step 1: MySQL (PlanetScale) -->
+        <div class="card">
+            <div class="step-header">
+                <h3 class="mb-0">Step 1: MySQL Database (PlanetScale)</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info alert-custom">
+                    <strong>📦 What is it?</strong> PlanetScale provides free MySQL databases. We'll use it for user authentication (username, email, password).
+                </div>
+                
+                <h5>Instructions:</h5>
+                <ol class="instruction-list">
+                    <li>Click the button below to open PlanetScale</li>
+                    <li>Sign up with your GitHub account (free)</li>
+                    <li>Click "Create a new database"</li>
+                    <li>Name it: <code>guvi_user_db</code></li>
+                    <li>Select region: <strong>AWS - Mumbai (ap-south-1)</strong> (closest to India)</li>
+                    <li>Click "Create database"</li>
+                    <li>Click "Connect" → Select "PHP/MySQL" → Copy the credentials</li>
+                    <li>Find: host, username, password, database name and paste below</li>
+                    <li><strong>IMPORTANT:</strong> Go to "Console" tab and run this SQL:
+                        <div class="credential-box mt-2">
+                            <small>CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</small>
+                        </div>
+                    </li>
+                </ol>
+
+                <button class="btn btn-primary mb-3" onclick="window.open('https://planetscale.com', '_blank')">
+                    🚀 Open PlanetScale
+                </button>
+
+                <h5>Enter Your Credentials:</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control mb-2" id="db_host" placeholder="DB_HOST (e.g., aws.connect.psdb.cloud)">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control mb-2" id="db_user" placeholder="DB_USER">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="password" class="form-control mb-2" id="db_pass" placeholder="DB_PASS">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control mb-2" id="db_name" placeholder="DB_NAME (guvi_user_db)">
+                    </div>
+                </div>
+                <span class="badge bg-success status-badge" id="mysql-status" style="display:none;">✓ MySQL Configured</span>
+            </div>
+        </div>
+
+        <!-- Step 2: MongoDB Atlas -->
+        <div class="card">
+            <div class="step-header">
+                <h3 class="mb-0">Step 2: MongoDB Database (MongoDB Atlas)</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info alert-custom">
+                    <strong>📦 What is it?</strong> MongoDB Atlas provides free NoSQL databases. We'll use it for user profiles (name, age, contact, address).
+                </div>
+                
+                <h5>Instructions:</h5>
+                <ol class="instruction-list">
+                    <li>Click the button below to open MongoDB Atlas</li>
+                    <li>Sign up with your email (free)</li>
+                    <li>Click "Build a Database"</li>
+                    <li><strong>IMPORTANT:</strong> Select <strong>"M0 FREE"</strong> tier (NOT M2/M5/M10!)</li>
+                    <li>Provider: AWS, Region: <strong>Mumbai (ap-south-1)</strong></li>
+                    <li>Cluster Name: <code>GuviCluster</code></li>
+                    <li>Create username: <code>guviuser</code> and a strong password</li>
+                    <li>Add IP: <code>0.0.0.0/0</code> (allow all) - for development</li>
+                    <li>Click "Connect" → "Connect your application" → Copy the connection string</li>
+                    <li>Replace <code>&lt;password&gt;</code> in connection string with your actual password</li>
+                    <li>Replace <code>test</code> with <code>guvi_profiles</code> in the connection string</li>
+                </ol>
+
+                <button class="btn btn-primary mb-3" onclick="window.open('https://www.mongodb.com/cloud/atlas/register', '_blank')">
+                    🚀 Open MongoDB Atlas
+                </button>
+
+                <h5>Enter Your Connection String:</h5>
+                <input type="text" class="form-control mb-2" id="mongo_uri" 
+                       placeholder="mongodb+srv://guviuser:password@guvicluster.xxxxx.mongodb.net/guvi_profiles?retryWrites=true&w=majority">
+                <small class="text-muted">Example: mongodb+srv://guviuser:mypass123@guvicluster.abc12.mongodb.net/guvi_profiles</small><br>
+                <span class="badge bg-success status-badge mt-2" id="mongo-status" style="display:none;">✓ MongoDB Configured</span>
+            </div>
+        </div>
+
+        <!-- Step 3: Redis Cloud -->
+        <div class="card">
+            <div class="step-header">
+                <h3 class="mb-0">Step 3: Redis Database (Redis Cloud)</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info alert-custom">
+                    <strong>📦 What is it?</strong> Redis Cloud provides free in-memory databases. We'll use it for session management (login sessions).
+                </div>
+                
+                <h5>Instructions:</h5>
+                <ol class="instruction-list">
+                    <li>Click the button below to open Redis Cloud</li>
+                    <li>Sign up with your email (free)</li>
+                    <li>Click "New Subscription" → Select "Free" plan (30MB)</li>
+                    <li>Provider: AWS, Region: <strong>ap-south-1 (Mumbai)</strong></li>
+                    <li>Click "Create database" → Database name: <code>guvi_sessions</code></li>
+                    <li>After creation, click on database → Copy:
+                        <ul>
+                            <li><strong>Endpoint</strong> (e.g., redis-12345.c123.ap-south-1-1.ec2.cloud.redislabs.com:12345)</li>
+                            <li><strong>Default user password</strong></li>
+                        </ul>
+                    </li>
+                    <li>Split endpoint into host and port (before and after the colon)</li>
+                </ol>
+
+                <button class="btn btn-primary mb-3" onclick="window.open('https://redis.com/try-free/', '_blank')">
+                    🚀 Open Redis Cloud
+                </button>
+
+                <h5>Enter Your Credentials:</h5>
+                <div class="row">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control mb-2" id="redis_host" 
+                               placeholder="REDIS_HOST (e.g., redis-12345.c123...com)">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control mb-2" id="redis_port" 
+                               placeholder="PORT (e.g., 12345)">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="password" class="form-control mb-2" id="redis_pass" 
+                               placeholder="REDIS_PASSWORD">
+                    </div>
+                </div>
+                <span class="badge bg-success status-badge" id="redis-status" style="display:none;">✓ Redis Configured</span>
+            </div>
+        </div>
+
+        <!-- Generate .env File -->
+        <div class="card">
+            <div class="step-header">
+                <h3 class="mb-0">Step 4: Generate Configuration File</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning alert-custom">
+                    <strong>⚠️ Important:</strong> Fill in ALL credentials above, then click the button below to generate your .env file.
+                </div>
+                
+                <button class="btn btn-primary btn-lg w-100 mb-3" onclick="generateEnv()">
+                    ✨ Generate .env Configuration
+                </button>
+
+                <div id="env-container" style="display:none;">
+                    <h5>Your .env File:</h5>
+                    <div class="env-output" id="env-output"></div>
+                    
+                    <button class="btn btn-success mt-3" onclick="copyEnv()">
+                        📋 Copy to Clipboard
+                    </button>
+                    <button class="btn btn-primary mt-3" onclick="downloadEnv()">
+                        💾 Download .env File
+                    </button>
+                    
+                    <div class="alert alert-success alert-custom mt-3">
+                        <strong>Next Steps:</strong>
+                        <ol class="mb-0 mt-2">
+                            <li>Copy the configuration above</li>
+                            <li>Open <code>C:\Users\kriti\OneDrive\Desktop\guviPS\.env</code></li>
+                            <li>Replace ALL content with the configuration above</li>
+                            <li>Save the file</li>
+                            <li>Restart your server (stop and run <code>node api/index.js</code>)</li>
+                            <li>Test signup and login at <a href="http://localhost:3000/signup.html" target="_blank">http://localhost:3000</a></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="card">
+            <div class="card-body">
+                <h5>💡 Need Help?</h5>
+                <ul>
+                    <li><strong>MongoDB says "not free":</strong> Make sure you select M0/Shared tier, NOT M2 or higher</li>
+                    <li><strong>Can't find credentials:</strong> Look for "Connect" or "Connection String" buttons in each service</li>
+                    <li><strong>Server not working:</strong> Make sure to restart the server after updating .env file</li>
+                    <li><strong>Signup fails:</strong> Check if you ran the SQL CREATE TABLE command in PlanetScale Console</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-save to localStorage
+        const fields = ['db_host', 'db_user', 'db_pass', 'db_name', 'mongo_uri', 'redis_host', 'redis_port', 'redis_pass'];
+        
+        fields.forEach(field => {
+            const element = document.getElementById(field);
+            // Load saved value
+            const saved = localStorage.getItem('dbsetup_' + field);
+            if (saved) element.value = saved;
+            
+            // Save on change
+            element.addEventListener('input', function() {
+                localStorage.setItem('dbsetup_' + field, this.value);
+                checkStatus();
+            });
+        });
+
+        function checkStatus() {
+            const db_host = document.getElementById('db_host').value;
+            const db_user = document.getElementById('db_user').value;
+            const db_pass = document.getElementById('db_pass').value;
+            const db_name = document.getElementById('db_name').value;
+            const mongo_uri = document.getElementById('mongo_uri').value;
+            const redis_host = document.getElementById('redis_host').value;
+            const redis_port = document.getElementById('redis_port').value;
+            const redis_pass = document.getElementById('redis_pass').value;
+
+            if (db_host && db_user && db_name) {
+                document.getElementById('mysql-status').style.display = 'inline-block';
+            }
+            if (mongo_uri && mongo_uri.includes('mongodb')) {
+                document.getElementById('mongo-status').style.display = 'inline-block';
+            }
+            if (redis_host && redis_port) {
+                document.getElementById('redis-status').style.display = 'inline-block';
+            }
+        }
+
+        function generateEnv() {
+            const db_host = document.getElementById('db_host').value.trim();
+            const db_user = document.getElementById('db_user').value.trim();
+            const db_pass = document.getElementById('db_pass').value.trim();
+            const db_name = document.getElementById('db_name').value.trim();
+            const mongo_uri = document.getElementById('mongo_uri').value.trim();
+            const redis_host = document.getElementById('redis_host').value.trim();
+            const redis_port = document.getElementById('redis_port').value.trim();
+            const redis_pass = document.getElementById('redis_pass').value.trim();
+
+            if (!db_host || !db_user || !db_name || !mongo_uri || !redis_host || !redis_port) {
+                alert('❌ Please fill in all required fields!\n\n' + 
+                      'Required:\n' +
+                      '- MySQL: host, user, database name\n' +
+                      '- MongoDB: connection URI\n' +
+                      '- Redis: host, port\n\n' +
+                      'Note: Passwords can be empty if not set');
+                return;
+            }
+
+            const envContent = `# Cloud Database Configuration
+# Generated on ${new Date().toLocaleString()}
+
+# MySQL (PlanetScale)
+DB_HOST=${db_host}
+DB_USER=${db_user}
+DB_PASS=${db_pass}
+DB_NAME=${db_name}
+
+# MongoDB Atlas
+MONGO_URI=${mongo_uri}
+
+# Redis Cloud
+REDIS_HOST=${redis_host}
+REDIS_PORT=${redis_port}
+REDIS_PASSWORD=${redis_pass}
+
+# Session Settings
+SESSION_EXPIRY=3600
+`;
+
+            document.getElementById('env-output').textContent = envContent;
+            document.getElementById('env-container').style.display = 'block';
+            
+            // Scroll to output
+            document.getElementById('env-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyEnv() {
+            const envText = document.getElementById('env-output').textContent;
+            navigator.clipboard.writeText(envText).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-secondary');
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('btn-secondary');
+                    btn.classList.add('btn-success');
+                }, 2000);
+            });
+        }
+
+        function downloadEnv() {
+            const envText = document.getElementById('env-output').textContent;
+            const blob = new Blob([envText], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '.env';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Check status on page load
+        checkStatus();
+    </script>
+</body>
+</html>
