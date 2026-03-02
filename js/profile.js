@@ -59,11 +59,6 @@ $(document).ready(function() {
                 showMessage('Failed to load profile data', 'warning');
             }
         });
-            },
-            error: function(xhr, status, error) {
-                console.error('Error loading profile:', error);
-            }
-        });
     }
 
     // Load profile on page load
