@@ -313,22 +313,31 @@ app.post('/api/update_profile', async (req, res) => {
     try {
         const { sessionToken, userId, fullName, dob, age, contact, address, city, country } = req.body;
 
+        console.log('Update profile request for userId:', userId);
+
         // Validate input
         if (!sessionToken || !userId) {
+            console.log('❌ Invalid request - missing sessionToken or userId');
             return res.json({ success: false, message: 'Invalid request!' });
         }
 
         // Validate session
+        console.log('Validating session...');
         const isValid = await RedisClient.validateSession(sessionToken, userId);
         if (!isValid) {
+            console.log('❌ Session validation failed');
             return res.json({ success: false, message: 'Session expired or invalid!' });
         }
+        console.log('✓ Session validated');
 
         // Update profile in MongoDB
+        console.log('Getting MongoDB collection...');
         const collection = await getMongoCollection();
         if (!collection) {
-            return res.json({ success: false, message: 'Database connection failed!' });
+            console.log('❌ MongoDB collection is null');
+            return res.json({ success: false, message: 'Database connection failed! Please try again.' });
         }
+        console.log('✓ MongoDB collection obtained');
 
         const updateData = {
             fullName: fullName || '',
@@ -341,21 +350,26 @@ app.post('/api/update_profile', async (req, res) => {
             updatedAt: new Date()
         };
 
+        console.log('Updating profile in MongoDB...');
         const result = await collection.updateOne(
             { userId: userId.toString() },
             { $set: updateData },
             { upsert: true }
         );
 
+        console.log('MongoDB update result:', result);
+
         if (result.modifiedCount > 0 || result.upsertedCount > 0) {
+            console.log('✓ Profile updated successfully');
             res.json({ success: true, message: 'Profile updated successfully!' });
         } else {
+            console.log('⚠️  No changes detected');
             res.json({ success: true, message: 'No changes were made to the profile.' });
         }
 
     } catch (error) {
-        console.error('Update profile error:', error);
-        res.json({ success: false, message: 'An error occurred while updating profile.' });
+        console.error('❌ Update profile error:', error);
+        res.json({ success: false, message: 'An error occurred while updating profile: ' + error.message });
     }
 });
 

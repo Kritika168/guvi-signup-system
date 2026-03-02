@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Update Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Profile Update Test Page</h2>
+        <div id="status" class="alert alert-info">Testing...</div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        async function testProfileUpdate() {
+            const statusDiv = document.getElementById('status');
+            const resultsDiv = document.getElementById('results');
+            let html = '<h4>Test Results:</h4>';
+
+            try {
+                // Step 1: Create test user
+                html += '<p>1. Creating test user...</p>';
+                const testUser = {
+                    username: 'webtest' + Date.now(),
+                    email: `webtest${Date.now()}@example.com`,
+                    password: 'Test123456'
+                };
+                
+                let response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testUser)
+                });
+                let data = await response.json();
+                html += `<p class="${data.success ? 'text-success' : 'text-danger'}">Signup: ${data.message}</p>`;
+
+                if (!data.success) {
+                    resultsDiv.innerHTML = html;
+                    statusDiv.className = 'alert alert-danger';
+                    statusDiv.textContent = 'Test failed at signup';
+                    return;
+                }
+
+                // Step 2: Login
+                html += '<p>2. Logging in...</p>';
+                response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: testUser.email,
+                        password: testUser.password
+                    })
+                });
+                data = await response.json();
+                html += `<p class="${data.success ? 'text-success' : 'text-danger'}">Login: ${data.message}</p>`;
+                
+                if (!data.success) {
+                    resultsDiv.innerHTML = html;
+                    statusDiv.className = 'alert alert-danger';
+                    statusDiv.textContent = 'Test failed at login';
+                    return;
+                }
+
+                const sessionToken = data.sessionToken;
+                const userId = data.userId;
+
+                // Step 3: Update profile
+                html += '<p>3. Updating profile...</p>';
+                const profileData = {
+                    sessionToken: sessionToken,
+                    userId: userId,
+                    fullName: 'Web Test User',
+                    dob: '1995-05-15',
+                    age: '28',
+                    contact: '9876543210',
+                    address: '456 Web Street',
+                    city: 'Web City',
+                    country: 'Test Country'
+                };
+
+                response = await fetch('/api/update_profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(profileData)
+                });
+                data = await response.json();
+                html += `<p class="${data.success ? 'text-success' : 'text-danger'}">Update: ${data.message}</p>`;
+
+                if (!data.success) {
+                    resultsDiv.innerHTML = html;
+                    statusDiv.className = 'alert alert-danger';
+                    statusDiv.textContent = 'Test failed at profile update';
+                    return;
+                }
+
+                // Step 4: Get profile
+                html += '<p>4. Verifying profile...</p>';
+                response = await fetch('/api/get_profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sessionToken: sessionToken,
+                        userId: userId
+                    })
+                });
+                data = await response.json();
+                
+                if (data.success && data.profile) {
+                    html += '<p class="text-success">✅ Profile verified successfully!</p>';
+                    html += '<div class="card mt-3"><div class="card-body">';
+                    html += '<h5>Saved Profile Data:</h5>';
+                    html += `<p><strong>Full Name:</strong> ${data.profile.fullName}</p>`;
+                    html += `<p><strong>DOB:</strong> ${data.profile.dob}</p>`;
+                    html += `<p><strong>Age:</strong> ${data.profile.age}</p>`;
+                    html += `<p><strong>Contact:</strong> ${data.profile.contact}</p>`;
+                    html += `<p><strong>Address:</strong> ${data.profile.address}</p>`;
+                    html += `<p><strong>City:</strong> ${data.profile.city}</p>`;
+                    html += `<p><strong>Country:</strong> ${data.profile.country}</p>`;
+                    html += '</div></div>';
+                    
+                    statusDiv.className = 'alert alert-success';
+                    statusDiv.textContent = '✅ All tests passed! Profile update is working correctly.';
+                } else {
+                    html += '<p class="text-danger">❌ Failed to verify profile</p>';
+                    statusDiv.className = 'alert alert-danger';
+                    statusDiv.textContent = 'Test failed at verification';
+                }
+
+            } catch (error) {
+                html += `<p class="text-danger">❌ Error: ${error.message}</p>`;
+                statusDiv.className = 'alert alert-danger';
+                statusDiv.textContent = 'Test failed with error';
+            }
+
+            resultsDiv.innerHTML = html;
+        }
+
+        // Run test on page load
+        testProfileUpdate();
+    </script>
+</body>
+</html>
