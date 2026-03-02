@@ -214,10 +214,57 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// Get profile endpoint
+// Get profile endpoint (POST)
 app.post('/api/get_profile', async (req, res) => {
     try {
         const { sessionToken, userId } = req.body;
+
+        // Validate input
+        if (!sessionToken || !userId) {
+            return res.json({ success: false, message: 'Invalid request!' });
+        }
+
+        // Validate session
+        const isValid = await RedisClient.validateSession(sessionToken, userId);
+        if (!isValid) {
+            return res.json({ success: false, message: 'Session expired or invalid!' });
+        }
+
+        // Fetch profile from MongoDB
+        const collection = await getMongoCollection();
+        if (!collection) {
+            return res.json({ success: false, message: 'Database connection failed!' });
+        }
+
+        const profile = await collection.findOne({ userId: userId.toString() });
+
+        if (profile) {
+            res.json({
+                success: true,
+                profile: {
+                    fullName: profile.fullName || '',
+                    dob: profile.dob || '',
+                    age: profile.age || '',
+                    contact: profile.contact || '',
+                    address: profile.address || '',
+                    city: profile.city || '',
+                    country: profile.country || ''
+                }
+            });
+        } else {
+            res.json({ success: true, profile: null });
+        }
+
+    } catch (error) {
+        console.error('Get profile error:', error);
+        res.json({ success: false, message: 'An error occurred while fetching profile.' });
+    }
+});
+
+// Get profile endpoint (GET) - for testing and compatibility
+app.get('/api/profile', async (req, res) => {
+    try {
+        const { sessionToken, userId } = req.query;
 
         // Validate input
         if (!sessionToken || !userId) {
