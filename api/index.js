@@ -197,12 +197,6 @@ app.post('/api/login', async (req, res) => {
             return res.json({ success: false, message: 'Failed to create session!' });
         }
 
-        // Update last login
-        await connection.execute(
-            'UPDATE users SET last_login = NOW() WHERE id = ?',
-            [user.id]
-        );
-
         await closeMySQLConnection(connection);
 
         res.json({
