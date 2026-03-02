@@ -35,9 +35,10 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify({
                 sessionToken: sessionToken,
-                userId: userId
+                userId: parseInt(userId) // Ensure userId is a number
             }),
             success: function(response) {
+                console.log('Profile load response:', response); // Debug log
                 if (response.success && response.profile) {
                     const profile = response.profile;
                     $('#full-name').val(profile.fullName || '');
@@ -47,7 +48,17 @@ $(document).ready(function() {
                     $('#address').val(profile.address || '');
                     $('#city').val(profile.city || '');
                     $('#country').val(profile.country || '');
+                } else if (!response.success) {
+                    console.error('Failed to load profile:', response.message);
+                    showMessage(response.message || 'Failed to load profile data', 'warning');
                 }
+            },
+            error: function(xhr, status, error) {
+                console.error('Profile load error:', error);
+                console.error('Response:', xhr.responseText);
+                showMessage('Failed to load profile data', 'warning');
+            }
+        });
             },
             error: function(xhr, status, error) {
                 console.error('Error loading profile:', error);
@@ -92,7 +103,7 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify({
                 sessionToken: sessionToken,
-                userId: userId,
+                userId: parseInt(userId), // Ensure userId is a number
                 fullName: fullName,
                 dob: dob,
                 age: age,
@@ -102,17 +113,29 @@ $(document).ready(function() {
                 country: country
             }),
             success: function(response) {
+                console.log('Update response:', response); // Debug log
                 if (response.success) {
                     showMessage('Profile updated successfully!', 'success');
                 } else {
                     showMessage(response.message || 'Update failed!', 'danger');
+                    console.error('Update failed:', response.message);
                 }
                 button.prop('disabled', false);
                 button.html('Update Profile');
             },
             error: function(xhr, status, error) {
-                console.error('Error:', error);
-                showMessage('An error occurred. Please try again later.', 'danger');
+                console.error('AJAX Error:', error);
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
+                
+                // Try to parse error response
+                try {
+                    const errorData = JSON.parse(xhr.responseText);
+                    showMessage(errorData.message || 'An error occurred. Please try again later.', 'danger');
+                } catch (e) {
+                    showMessage('An error occurred. Please try again later.', 'danger');
+                }
+                
                 button.prop('disabled', false);
                 button.html('Update Profile');
             }

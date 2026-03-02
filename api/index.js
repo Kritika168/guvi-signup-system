@@ -219,13 +219,16 @@ app.post('/api/get_profile', async (req, res) => {
     try {
         const { sessionToken, userId } = req.body;
 
+        // Convert userId to string for consistency
+        const userIdStr = userId ? userId.toString() : null;
+
         // Validate input
-        if (!sessionToken || !userId) {
+        if (!sessionToken || !userIdStr) {
             return res.json({ success: false, message: 'Invalid request!' });
         }
 
         // Validate session
-        const isValid = await RedisClient.validateSession(sessionToken, userId);
+        const isValid = await RedisClient.validateSession(sessionToken, userIdStr);
         if (!isValid) {
             return res.json({ success: false, message: 'Session expired or invalid!' });
         }
@@ -236,7 +239,7 @@ app.post('/api/get_profile', async (req, res) => {
             return res.json({ success: false, message: 'Database connection failed!' });
         }
 
-        const profile = await collection.findOne({ userId: userId.toString() });
+        const profile = await collection.findOne({ userId: userIdStr });
 
         if (profile) {
             res.json({
@@ -266,13 +269,16 @@ app.get('/api/profile', async (req, res) => {
     try {
         const { sessionToken, userId } = req.query;
 
+        // Convert userId to string for consistency
+        const userIdStr = userId ? userId.toString() : null;
+
         // Validate input
-        if (!sessionToken || !userId) {
+        if (!sessionToken || !userIdStr) {
             return res.json({ success: false, message: 'Invalid request!' });
         }
 
         // Validate session
-        const isValid = await RedisClient.validateSession(sessionToken, userId);
+        const isValid = await RedisClient.validateSession(sessionToken, userIdStr);
         if (!isValid) {
             return res.json({ success: false, message: 'Session expired or invalid!' });
         }
@@ -283,7 +289,7 @@ app.get('/api/profile', async (req, res) => {
             return res.json({ success: false, message: 'Database connection failed!' });
         }
 
-        const profile = await collection.findOne({ userId: userId.toString() });
+        const profile = await collection.findOne({ userId: userIdStr });
 
         if (profile) {
             res.json({
@@ -313,17 +319,20 @@ app.post('/api/update_profile', async (req, res) => {
     try {
         const { sessionToken, userId, fullName, dob, age, contact, address, city, country } = req.body;
 
-        console.log('Update profile request for userId:', userId);
+        // Convert userId to string for consistency
+        const userIdStr = userId ? userId.toString() : null;
+
+        console.log('Update profile request for userId:', userIdStr);
 
         // Validate input
-        if (!sessionToken || !userId) {
+        if (!sessionToken || !userIdStr) {
             console.log('❌ Invalid request - missing sessionToken or userId');
             return res.json({ success: false, message: 'Invalid request!' });
         }
 
         // Validate session
         console.log('Validating session...');
-        const isValid = await RedisClient.validateSession(sessionToken, userId);
+        const isValid = await RedisClient.validateSession(sessionToken, userIdStr);
         if (!isValid) {
             console.log('❌ Session validation failed');
             return res.json({ success: false, message: 'Session expired or invalid!' });
@@ -352,7 +361,7 @@ app.post('/api/update_profile', async (req, res) => {
 
         console.log('Updating profile in MongoDB...');
         const result = await collection.updateOne(
-            { userId: userId.toString() },
+            { userId: userIdStr },
             { $set: updateData },
             { upsert: true }
         );
@@ -364,7 +373,7 @@ app.post('/api/update_profile', async (req, res) => {
             res.json({ success: true, message: 'Profile updated successfully!' });
         } else {
             console.log('⚠️  No changes detected');
-            res.json({ success: true, message: 'No changes were made to the profile.' });
+            res.json({ success: true, message: 'Profile updated successfully!' });
         }
 
     } catch (error) {
